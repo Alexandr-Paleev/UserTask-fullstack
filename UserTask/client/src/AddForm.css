@@ -7,7 +7,7 @@
 }
 
 .AddUserForm {
-  display: none;
+  /* display: none; */
   border: 3px solid green;
   width: 300px;
 }

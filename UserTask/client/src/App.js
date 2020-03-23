@@ -34,7 +34,7 @@ class App extends Component {
         </div>
         <div className='AppTaskList'>
           <h2>Task list</h2>
-          <p>{this.state.isFetching ? 'Fetching users...' : ''}</p>
+          <p>{this.state.isFetching ? 'Fetching tasks...' : ''}</p>
           <TaskList tasks={this.state.tasks} taskForRemoveId={this.props.taskForRemoveId}/>
           <AddTaskForm task_service_url={TASK_SERVICE_URL} />
         </div>        
