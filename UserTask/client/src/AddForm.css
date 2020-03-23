@@ -1,0 +1,13 @@
+.Add-text, .Add-button {
+    margin: 5px;
+  }
+  
+.Add-text {
+  width: 100px;
+}
+
+.AddUserForm {
+  display: none;
+  border: 3px solid green;
+  width: 300px;
+}
