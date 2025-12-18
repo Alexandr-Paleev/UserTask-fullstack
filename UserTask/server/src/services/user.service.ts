@@ -10,16 +10,28 @@ class UserService {
   }
 
   public createUser = async (userData) => {
-    const result = await this.userRepository.findOne({where: { firstname: userData.firstname}})
-    if (result) {
-      const error: any = new Error("This user already exists!");
+    const existingUserByPhone = await this.userRepository.findOne({where: { phone: userData.phone}});
+    if (existingUserByPhone) {
+      const error: any = new Error("User with this phone number already exists!");
       error.status = 409;
       throw error;
-    } else {
-      const newUser = this.userRepository.create(userData);
-      await this.userRepository.save(newUser);
-      return newUser;
     }
+    
+    const existingUserByName = await this.userRepository.findOne({
+      where: { 
+        firstname: userData.firstname,
+        lastname: userData.lastname
+      }
+    });
+    if (existingUserByName) {
+      const error: any = new Error("User with this name already exists!");
+      error.status = 409;
+      throw error;
+    }
+    
+    const newUser = this.userRepository.create(userData);
+    await this.userRepository.save(newUser);
+    return newUser;
   }
 
   public getAllUsers = async () => {

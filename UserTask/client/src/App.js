@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 import UserList from './UserList';
 import AddUserForm from './AddUserForm';
 import TaskList from './TaskList';
@@ -30,9 +31,8 @@ const App = () => {
   const fetchTasks = async () => {
     setIsFetchingTasks(true);
     try {
-      const response = await fetch(TASK_SERVICE_URL);
-      const result = await response.json();
-      setTasks(result);
+      const response = await axios.get(TASK_SERVICE_URL);
+      setTasks(response.data);
     } catch (e) {
       console.error(e);
     } finally {
@@ -40,12 +40,26 @@ const App = () => {
     }
   };
 
-  const removeTask = (id) => {
-    axios.delete(`${TASK_SERVICE_URL}/${id}`)
-        .then(() => {
-             setTasks(tasks.filter(t => t.id !== id));
-        })
-        .catch(e => console.error(e));
+  const removeTask = async (id) => {
+    try {
+      await axios.delete(`${TASK_SERVICE_URL}/${id}`);
+      setTasks(tasks.filter(t => t.id !== id));
+      toast.success('Task deleted successfully');
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to delete task');
+    }
+  };
+
+  const removeUser = async (id) => {
+    try {
+      await axios.delete(`${USER_SERVICE_URL}/${id}`);
+      setUsers(users.filter(u => u.id !== id));
+      toast.success('User deleted successfully');
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to delete user');
+    }
   };
 
   useEffect(() => {
@@ -55,6 +69,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <Toaster position="top-right" />
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-10">UserTask Manager</h1>
         
@@ -72,7 +87,7 @@ const App = () => {
               </div>
               
               <div className="mb-6 max-h-96 overflow-y-auto">
-                <UserList users={users} />
+                <UserList users={users} onDelete={removeUser} />
               </div>
               
               <div className="border-t pt-6">

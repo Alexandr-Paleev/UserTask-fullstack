@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import toast from 'react-hot-toast';
 import { ListPlus } from 'lucide-react';
 
 const schema = z.object({
@@ -16,7 +17,7 @@ const schema = z.object({
 
 const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
   const [users, setUsers] = useState([]);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
     resolver: zodResolver(schema),
   });
 
@@ -28,22 +29,21 @@ const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
       .catch(error => console.error("Error fetching users:", error));
   }, []);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const payload = {
       ...data,
       user: { id: parseInt(data.userId, 10) }
     };
     
-    axios.post(task_service_url, payload)
-      .then(r => {
-        alert("Task added!");
-        reset();
-        if (onTaskAdded) onTaskAdded();
-      })
-      .catch(e => {
-        console.error(e);
-        alert("Error adding task: " + (e.response?.data || e.message));
-      });
+    try {
+      await axios.post(task_service_url, payload);
+      toast.success('Task added successfully!');
+      reset();
+      if (onTaskAdded) onTaskAdded();
+    } catch (e) {
+      console.error(e);
+      toast.error(e.response?.data || 'Failed to add task');
+    }
   };
 
   return (
@@ -89,10 +89,9 @@ const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
             <div>
                 <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Start Time</label>
                 <input 
-                type="text"
+                type="time"
                 {...register("startTime")} 
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
-                placeholder="09:00"
                 />
                 {errors.startTime && <p className="text-red-500 text-xs mt-1">{errors.startTime.message}</p>}
             </div>
@@ -100,10 +99,9 @@ const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
             <div>
                 <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">End Time</label>
                 <input 
-                type="text"
+                type="time"
                 {...register("endTime")} 
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
-                placeholder="10:00"
                 />
                 {errors.endTime && <p className="text-red-500 text-xs mt-1">{errors.endTime.message}</p>}
             </div>
@@ -125,10 +123,11 @@ const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
       </div>
 
       <button 
-        type="submit" 
-        className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Create Task
+        {isSubmitting ? 'Creating...' : 'Create Task'}
       </button>
     </form>
   );

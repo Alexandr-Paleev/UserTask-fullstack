@@ -2,6 +2,15 @@ import React from 'react';
 import { Trash2, MapPin, Clock, User, Calendar } from 'lucide-react';
 
 const TaskList = ({ tasks, onDelete }) => {
+  const handleDeleteClick = (task) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${task.title}"?\n\nThis action cannot be undone.`
+    );
+    if (confirmed) {
+      onDelete(task.id);
+    }
+  };
+
   if (!tasks || tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-gray-400">
@@ -13,7 +22,7 @@ const TaskList = ({ tasks, onDelete }) => {
 
   return (
     <ul className="space-y-4">
-      {tasks.map(task => (
+        {tasks.map(task => (
         <li key={task.id} className="group bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500">
           <div className="flex justify-between items-start">
             <div className="flex-1 pr-4">
@@ -46,7 +55,7 @@ const TaskList = ({ tasks, onDelete }) => {
             </div>
             
             <button 
-              onClick={() => onDelete(task.id)}
+              onClick={() => handleDeleteClick(task)}
               className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
               title="Delete Task"
             >
@@ -54,8 +63,8 @@ const TaskList = ({ tasks, onDelete }) => {
             </button>
           </div>
         </li>
-      ))}
-    </ul>
+        ))}
+      </ul>
   );
 };
 
