@@ -19,19 +19,19 @@ class TaskService {
   }
  
   public getAllTasks = async () => {
-    const tasks = await this.taskRepository.find();
+    const tasks = await this.taskRepository.find({ relations: ["user"] });
     return tasks;
   }
  
   public getTaskByIdUser = async (id: any) => {
     const user = await this.userRepository.findOne(id);
-    const task = await this.taskRepository.find({user_: user});
-    if (task.length !== 0) {
-      return task;
-    } else {
-      // next(new TaskNotFoundException(id));
-      return `User with id = ${id} not found.`;
+    if (!user) {
+         const error: any = new Error(`User with id = ${id} not found.`);
+         error.status = 404;
+         throw error;
     }
+    const task = await this.taskRepository.find({user: user});
+    return task;
   }
  
   public editTask = async (id, body) => {
@@ -40,8 +40,9 @@ class TaskService {
     if (updatedTask) {
       return updatedTask;
     } else {
-      // next(new TaskNotFoundException(id));
-      return `Task with id = ${id} not found.`;
+      const error: any = new Error(`Task with id = ${id} not found.`);
+      error.status = 404;
+      throw error;
     }
   }
  
@@ -50,8 +51,9 @@ class TaskService {
     if (deleteResponse.affected !== 0) {
       return 'Ok';
     } else {
-      // next(new TaskNotFoundException(id));
-      return `Task with id=${id} not found.`;
+      const error: any = new Error(`Task with id=${id} not found.`);
+      error.status = 404;
+      throw error;
     }
   }
 }

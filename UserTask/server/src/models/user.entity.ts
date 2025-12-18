@@ -20,11 +20,11 @@ class User {
   @Column()
   public phone: string;
 
-  @ManyToOne(() => City, (city: City) => city.user_)
-  public city_: City;
+  @ManyToOne(() => City, (city: City) => city.users)
+  public city: City;
 
-  @OneToMany(() => Task, (task: Task) => task.address)
-  public task_: Task[];
+  @OneToMany(() => Task, (task: Task) => task.user)
+  public tasks: Task[];
 }
  
 export default User;

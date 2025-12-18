@@ -6,23 +6,39 @@ class UserController {
     private service: UserService = new UserService();
 
   public createUser = async (request: express.Request, response: express.Response) => {
-    let newUser = await this.service.createUser(request.body);
-    response.send(newUser);
+    try {
+      let newUser = await this.service.createUser(request.body);
+      response.status(201).send(newUser);
+    } catch (error) {
+      response.status(error.status || 500).send(error.message);
+    }
   }
  
   public getAllUsers = async (request: express.Request, response: express.Response) => {
-    let users = await this.service.getAllUsers();
-    response.send(users);
+    try {
+      let users = await this.service.getAllUsers();
+      response.send(users);
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
   }
  
   public getAllUserCity = async (request: express.Request, response: express.Response) => {
-    let user = await this.service.getAllUserCity(request.params.id);
-    response.send(user);
+    try {
+      let user = await this.service.getAllUserCity(request.params.id);
+      response.send(user);
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
   }
  
   public deleteUser = async (request: express.Request, response: express.Response) => {
-    let deleteResponse = await this.service.deleteUser(request.params.id);
-    response.send(deleteResponse);
+    try {
+      let deleteResponse = await this.service.deleteUser(request.params.id);
+      response.send(deleteResponse);
+    } catch (error) {
+      response.status(error.status || 500).send(error.message);
+    }
   }
 }
  
