@@ -60,7 +60,7 @@ const UserList = ({ users, onDelete }) => {
                         variant="subtle" 
                         color="red" 
                         onClick={() => handleDeleteClick(user)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="group-hover-target"
                       >
                         <IconTrash size={18} />
                       </ActionIcon>
