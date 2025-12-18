@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, zodResolver } from '@mantine/form';
 import { z } from 'zod';
-import toast from 'react-hot-toast';
-import { ListPlus } from 'lucide-react';
+import { notifications } from '@mantine/notifications';
+import { TextInput, Textarea, Select, Button, Title, Stack, Group, Paper } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 
 const schema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -17,8 +17,18 @@ const schema = z.object({
 
 const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
   const [users, setUsers] = useState([]);
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
-    resolver: zodResolver(schema),
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm({
+    initialValues: {
+      title: '',
+      description: '',
+      address: '',
+      startTime: '',
+      endTime: '',
+      userId: '',
+    },
+    validate: zodResolver(schema),
   });
 
   useEffect(() => {
@@ -29,107 +39,107 @@ const AddTaskForm = ({ task_service_url, onTaskAdded }) => {
       .catch(error => console.error("Error fetching users:", error));
   }, []);
 
-  const onSubmit = async (data) => {
+  const handleSubmit = async (values) => {
+    setIsSubmitting(true);
     const payload = {
-      ...data,
-      user: { id: parseInt(data.userId, 10) }
+      ...values,
+      user: { id: parseInt(values.userId, 10) }
     };
     
     try {
       await axios.post(task_service_url, payload);
-      toast.success('Task added successfully!');
-      reset();
+      notifications.show({
+        title: 'Success',
+        message: 'Task added successfully!',
+        color: 'green',
+      });
+      form.reset();
       if (onTaskAdded) onTaskAdded();
     } catch (e) {
       console.error(e);
-      toast.error(e.response?.data || 'Failed to add task');
+      notifications.show({
+        title: 'Error',
+        message: e.response?.data || 'Failed to add task',
+        color: 'red',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const userOptions = users.map(user => ({
+    value: user.id.toString(),
+    label: `${user.firstname} ${user.lastname}`
+  }));
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-50 rounded-lg p-4 mt-4 border border-gray-200">
-      <div className="flex items-center mb-4 text-gray-700">
-        <ListPlus size={20} className="mr-2" />
-        <h3 className="text-lg font-bold">New Task</h3>
-      </div>
-      
-      <div className="space-y-4">
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Title</label>
-          <input 
-            {...register("title")} 
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
+    <Paper withBorder p="md" radius="md" bg="var(--mantine-color-gray-0)">
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Group mb="md">
+          <IconPlus size={20} color="var(--mantine-color-green-6)" />
+          <Title order={4}>New Task</Title>
+        </Group>
+        
+        <Stack gap="sm">
+          <TextInput
+            label="Title"
             placeholder="e.g. Weekly Meeting"
+            required
+            {...form.getInputProps('title')}
           />
-          {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
-        </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Description</label>
-          <textarea 
-            {...register("description")} 
-            rows="2"
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
+          <Textarea
+            label="Description"
             placeholder="Task details..."
+            required
+            rows={2}
+            {...form.getInputProps('description')}
           />
-          {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Address</label>
-            <input 
-                {...register("address")} 
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
-                placeholder="Office Room 302"
+          <TextInput
+            label="Address"
+            placeholder="Office Room 302"
+            required
+            {...form.getInputProps('address')}
+          />
+
+          <Group grow>
+            <TextInput
+              type="time"
+              label="Start Time"
+              required
+              {...form.getInputProps('startTime')}
             />
-            {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
-            </div>
+            <TextInput
+              type="time"
+              label="End Time"
+              required
+              {...form.getInputProps('endTime')}
+            />
+          </Group>
 
-            <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Start Time</label>
-                <input 
-                type="time"
-                {...register("startTime")} 
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
-                />
-                {errors.startTime && <p className="text-red-500 text-xs mt-1">{errors.startTime.message}</p>}
-            </div>
+          <Select
+            label="Assign to User"
+            placeholder="Select a user"
+            data={userOptions}
+            required
+            searchable
+            {...form.getInputProps('userId')}
+          />
 
-            <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">End Time</label>
-                <input 
-                type="time"
-                {...register("endTime")} 
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border" 
-                />
-                {errors.endTime && <p className="text-red-500 text-xs mt-1">{errors.endTime.message}</p>}
-            </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Assign to User</label>
-          <select 
-            {...register("userId")} 
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm p-2 border bg-white"
+          <Button 
+            type="submit" 
+            loading={isSubmitting}
+            fullWidth 
+            mt="md"
+            gradient={{ from: 'teal', to: 'lime', deg: 105 }}
+            variant="gradient"
           >
-            <option value="">Select a user</option>
-            {users.map(user => (
-              <option key={user.id} value={user.id}>{user.firstname} {user.lastname}</option>
-            ))}
-          </select>
-          {errors.userId && <p className="text-red-500 text-xs mt-1">{errors.userId.message}</p>}
-        </div>
-      </div>
-
-      <button 
-        type="submit"
-        disabled={isSubmitting}
-        className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? 'Creating...' : 'Create Task'}
-      </button>
-    </form>
+            Create Task
+          </Button>
+        </Stack>
+      </form>
+    </Paper>
   );
 };
 
