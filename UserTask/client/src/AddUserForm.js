@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import toast from 'react-hot-toast';
 import { UserPlus } from 'lucide-react';
 
 const schema = z.object({
@@ -15,7 +16,7 @@ const schema = z.object({
 
 const AddUserForm = ({ user_service_url, onUserAdded }) => {
   const [cities, setCities] = useState([]);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
     resolver: zodResolver(schema),
   });
 
@@ -27,22 +28,21 @@ const AddUserForm = ({ user_service_url, onUserAdded }) => {
       .catch(error => console.error("Error fetching cities:", error));
   }, []);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const payload = {
       ...data,
       city: { id: parseInt(data.cityId, 10) }
     };
     
-    axios.post(user_service_url, payload)
-      .then(r => {
-        alert("User added!");
-        reset();
-        if (onUserAdded) onUserAdded();
-      })
-      .catch(e => {
-        console.error(e);
-        alert("Error adding user: " + (e.response?.data || e.message));
-      });
+    try {
+      await axios.post(user_service_url, payload);
+      toast.success('User added successfully!');
+      reset();
+      if (onUserAdded) onUserAdded();
+    } catch (e) {
+      console.error(e);
+      toast.error(e.response?.data || 'Failed to add user');
+    }
   };
 
   return (
@@ -109,10 +109,11 @@ const AddUserForm = ({ user_service_url, onUserAdded }) => {
       </div>
 
       <button 
-        type="submit" 
-        className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-6 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Create User
+        {isSubmitting ? 'Creating...' : 'Create User'}
       </button>
     </form>
   );
