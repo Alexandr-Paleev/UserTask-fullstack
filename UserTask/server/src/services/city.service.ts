@@ -25,7 +25,9 @@ class CityService {
     if (deleteResponse.affected !== 0) {
       return 'Ok';
     } else {
-      return 'Error: No delete';
+      const error: any = new Error('Error: No delete');
+      error.status = 404;
+      throw error;
     }
   }
 }

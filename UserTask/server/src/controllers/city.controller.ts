@@ -6,18 +6,30 @@ class CityController {
     private service: CityService = new CityService();
 
   public create = async (request: express.Request, response: express.Response) => {
-    let newUser = await this.service.createCity(request.body);
-    response.send(newUser);
+    try {
+      let newUser = await this.service.createCity(request.body);
+      response.status(201).send(newUser);
+    } catch (error) {
+      response.status(error.status || 500).send(error.message);
+    }
   }
  
   public getAll = async (request: express.Request, response: express.Response) => {
-    let projects = await this.service.getAllCitys();
-    response.send(projects);
+    try {
+      let projects = await this.service.getAllCitys();
+      response.send(projects);
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
   }
  
   public delete = async (request: express.Request, response: express.Response) => {
-    let deleteResponse = await this.service.deleteCity(request.params.id);
-    response.send(deleteResponse);
+    try {
+      let deleteResponse = await this.service.deleteCity(request.params.id);
+      response.send(deleteResponse);
+    } catch (error) {
+      response.status(error.status || 500).send(error.message);
+    }
   }
 }
  

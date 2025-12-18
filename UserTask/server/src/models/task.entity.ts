@@ -20,10 +20,10 @@ class Task {
   public startTime: string;
 
   @Column()
-  public EndTime: string;
+  public endTime: string;
 
-  @ManyToOne(() => User, (user: User) => user.address)
-  public user_: User;
+  @ManyToOne(() => User, (user: User) => user.tasks)
+  public user: User;
 }
  
 export default Task;

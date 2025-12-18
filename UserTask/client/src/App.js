@@ -1,79 +1,111 @@
-import React, { Component } from 'react';
-import UserList from './UserList'
-import AddUserForm from './AddUserForm'
-import TaskList from './TaskList'
-import AddTaskForm from './AddTaskForm'
-import axios from 'axios'
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import UserList from './UserList';
+import AddUserForm from './AddUserForm';
+import TaskList from './TaskList';
+import AddTaskForm from './AddTaskForm';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+const USER_SERVICE_URL = `${API_URL}/user`;
+const TASK_SERVICE_URL = `${API_URL}/task`;
 
-const USER_SERVICE_URL = 'http://localhost:5000/user'
-const TASK_SERVICE_URL = 'http://localhost:5000/task'
+const App = () => {
+  const [users, setUsers] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [isFetchingTasks, setIsFetchingTasks] = useState(false);
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    // this.timer = null;
-    this.state = {
-      isFetching: false,
-      users: ['1'],
-      tasks: ['1']
-    };
-  }
-  render() {
-    const title = 'User list'
-    return (
-      <div className="App-row">
-        <div className='AppUserList'>
-          <h2>{title}</h2>
-          <p>{this.state.isFetching ? 'Fetching users...' : ''}</p>
-          <button onClick={this.fetchUsers} >get allUsers</button>
-          <UserList users={this.state.users} />
-          <button onClick={this.fetchTasksWithFetch} >show tasks</button>
-          <AddUserForm user_service_url={USER_SERVICE_URL}/>
+  const fetchUsers = async () => {
+    setIsFetchingUsers(true);
+    try {
+      const response = await axios.get(USER_SERVICE_URL);
+      setUsers(response.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsFetchingUsers(false);
+    }
+  };
+
+  const fetchTasks = async () => {
+    setIsFetchingTasks(true);
+    try {
+      const response = await fetch(TASK_SERVICE_URL);
+      const result = await response.json();
+      setTasks(result);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsFetchingTasks(false);
+    }
+  };
+
+  const removeTask = (id) => {
+    axios.delete(`${TASK_SERVICE_URL}/${id}`)
+        .then(() => {
+             setTasks(tasks.filter(t => t.id !== id));
+        })
+        .catch(e => console.error(e));
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchTasks();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-10">UserTask Manager</h1>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">Users</h2>
+                <button 
+                  onClick={fetchUsers} 
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                >
+                  {isFetchingUsers ? 'Loading...' : 'Refresh'}
+                </button>
+              </div>
+              
+              <div className="mb-6 max-h-96 overflow-y-auto">
+                <UserList users={users} />
+              </div>
+              
+              <div className="border-t pt-6">
+                <AddUserForm user_service_url={USER_SERVICE_URL} onUserAdded={fetchUsers} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">Tasks</h2>
+                <button 
+                  onClick={fetchTasks} 
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                >
+                  {isFetchingTasks ? 'Loading...' : 'Refresh'}
+                </button>
+              </div>
+              
+              <div className="mb-6 max-h-96 overflow-y-auto">
+                <TaskList tasks={tasks} onDelete={removeTask} />
+              </div>
+              
+              <div className="border-t pt-6">
+                <AddTaskForm task_service_url={TASK_SERVICE_URL} onTaskAdded={fetchTasks} />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className='AppTaskList'>
-          <h2>Task list</h2>
-          <p>{this.state.isFetching ? 'Fetching tasks...' : ''}</p>
-          <TaskList tasks={this.state.tasks} taskForRemoveId={this.props.taskForRemoveId}/>
-          <AddTaskForm task_service_url={TASK_SERVICE_URL} />
-        </div>        
       </div>
-    );
-  }
+    </div>
+  );
+};
 
-  // componentDidMount() {
-  //   this.fetchUsers()
-  //   this.timer = setInterval(() => this.fetchUsers(), 10000);
-  // }
-
-  // componentWillUnmount() {
-  //   this.timer = null;
-  // }
-
-  fetchUsers = () => {
-    this.setState({...this.state, isFetching: true})
-    axios.get(USER_SERVICE_URL)
-      .then(response => {
-        this.setState({users: response.data, isFetching: false})
-      })
-      .catch(e => console.log(e));
-  }
-
-  fetchTasksWithFetch = () => {
-    this.setState({...this.state, isFetching: true})
-    fetch(TASK_SERVICE_URL)
-      .then(response => response.json())
-      .then(result => this.setState({tasks: result, isFetching: false}))
-      .catch(e => console.log(e));
-  }
-
-  taskForRemoveId = (event) => {
-    const id = event.currentTarget.dataset.myId;
-    this.state.tasks = this.state.tasks.filter((task) => {
-      return task.id !== this.taskForRemoveId;
-    });
-  }
-}
-
-export default App
+export default App;

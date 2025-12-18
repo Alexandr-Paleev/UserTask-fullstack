@@ -9,8 +9,8 @@ class City {
   @Column()
   public title: string;
 
-  @OneToMany(() => User, (user: User) => user.city_)
-  public user_: User[];
+  @OneToMany(() => User, (user: User) => user.city)
+  public users: User[];
 }
  
 export default City;

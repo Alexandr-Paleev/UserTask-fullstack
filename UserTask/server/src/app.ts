@@ -6,8 +6,8 @@ import  User from './models/user.entity';
  
 class App {
   public app: express.Application;
-  public port = process.env.PORT || 5000;;
- 
+  public port = process.env.PORT || 5001;;
+
   constructor(controllers, port) {
     this.app = express();
     this.port = port;
