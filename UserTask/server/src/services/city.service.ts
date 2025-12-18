@@ -1,4 +1,3 @@
-import * as express from 'express';
 import { getRepository } from 'typeorm';
 import City from '../models/city.entity';
 
