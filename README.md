@@ -1,33 +1,69 @@
-# UserTask-fullstack
-fullstack app
+# UserTask Fullstack App
 
-## Installation
- 1. Clone this git repository: **git clone https://github.com/Alexandr-Paleev/UserTask-fullstack.git [directory]**
+A complete CRUD application for managing Users and Tasks, built with a modern stack.
 
- 2. Install the server packages: **cd server** && **npm install**
+## Tech Stack
 
- 3. Install the client packages: **cd client** && **yarn install**
+### Backend
+*   **Node.js** & **Express**
+*   **TypeScript**
+*   **PostgreSQL** (Database)
+*   **TypeORM** (ORM)
 
- 4. Create a **.env** file at the server root, and add keys in the file
+### Frontend
+*   **React** (Hooks)
+*   **Tailwind CSS**
+*   **React Hook Form** + **Zod**
 
-```
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=admin
-POSTGRES_DB=usertask
-PORT=5000
+### DevOps
+*   **Docker** & **Docker Compose**
 
-```
+## Quick Start (Docker)
 
-## Running the Application
-### Development Runtime
-In two terminals execute the following commands from the application root:
+The easiest way to run the entire application. **No manual configuration needed**, just run:
 
-**npm run dev** - starts the server in watch mode on port 5000
+1.  **Start the app:**
+    ```bash
+    cd UserTask
+    docker compose up --build
+    ```
 
-**yarn start** - starts the client in development & watch mode on port 3000
+2.  **Seed the database (in a new terminal):**
+    Populate the DB with initial cities and test data.
+    ```bash
+    docker exec -it usertask-server npm run seed
+    ```
 
+3.  **Open in browser:**
+    Go to [http://localhost:3000](http://localhost:3000)
 
+## Local Development (Without Docker)
 
-### You can get all the users, get all the tasks from the database. Create users and tasks with writing data to the database.
+If you want to run services locally on your machine.
+
+### Server
+1.  Navigate to `UserTask/server`.
+2.  Install dependencies: `npm install`.
+3.  **Configure Environment:**
+    Copy the example file to `.env`:
+    ```bash
+    cp .env.example .env
+    ```
+    *If your local Postgres has a password or different user, edit `.env` now.*
+4.  Run: `npm run dev`.
+
+### Client
+1.  Navigate to `UserTask/client`.
+2.  Install dependencies: `npm install`.
+3.  **Configure Environment:**
+    Copy the example file to `.env`:
+    ```bash
+    cp .env.example .env
+    ```
+4.  Run: `npm start`.
+
+## Features
+*   **Users:** Create users linked to specific cities.
+*   **Tasks:** Create tasks assigned to users with start/end times.
+*   **Data Integrity:** Foreign keys and cascading deletes (handled by DB).
+*   **Validation:** Robust backend and frontend validation.
