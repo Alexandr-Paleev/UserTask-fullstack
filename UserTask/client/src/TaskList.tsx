@@ -1,24 +1,31 @@
-import React from 'react';
-import { Card, Text, Badge, ActionIcon, Stack, Group, Tooltip, Box, Divider } from '@mantine/core';
-import { IconMapPin, IconClock, IconUser, IconCalendar, IconTrash } from '@tabler/icons-react';
-import { modals } from '@mantine/modals';
+import React from 'react'
+import { ActionIcon, Badge, Card, Divider, Group, Stack, Text, Tooltip, Box } from '@mantine/core'
+import { IconCalendar, IconClock, IconMapPin, IconTrash, IconUser } from '@tabler/icons-react'
+import { modals } from '@mantine/modals'
+import type { Task } from './types/entities'
 
-const TaskList = ({ tasks, onDelete }) => {
-  const handleDeleteClick = (task) => {
+type TaskListProps = {
+  tasks: Task[]
+  onDelete?: (taskId: number) => void
+}
+
+export default function TaskList({ tasks, onDelete }: TaskListProps) {
+  const handleDeleteClick = (task: Task) => {
+    if (!onDelete) return
     modals.openConfirmModal({
       title: 'Delete task',
       centered: true,
       children: (
         <Text size="sm">
-          Are you sure you want to delete task <b>"{task.title}"</b>?
-          This action cannot be undone.
+          Are you sure you want to delete task <b>&quot;{task.title}&quot;</b>? This action cannot be
+          undone.
         </Text>
       ),
       labels: { confirm: 'Delete task', cancel: 'No, keep it' },
       confirmProps: { color: 'red' },
       onConfirm: () => onDelete(task.id),
-    });
-  };
+    })
+  }
 
   if (!tasks || tasks.length === 0) {
     return (
@@ -28,18 +35,18 @@ const TaskList = ({ tasks, onDelete }) => {
           <Text c="dimmed">No tasks found.</Text>
         </Stack>
       </Box>
-    );
+    )
   }
 
   return (
     <Stack gap="md">
       {tasks.map((task) => (
-        <Card 
-          key={task.id} 
-          withBorder 
-          padding="md" 
-          radius="md" 
-          shadow="sm" 
+        <Card
+          key={task.id}
+          withBorder
+          padding="md"
+          radius="md"
+          shadow="sm"
           className="group"
           style={{ borderLeft: '4px solid var(--mantine-color-green-6)' }}
         >
@@ -51,12 +58,12 @@ const TaskList = ({ tasks, onDelete }) => {
               <Text size="sm" c="dimmed" mb="md" style={{ lineHeight: 1.5 }}>
                 {task.description}
               </Text>
-              
+
               <Group gap="xs">
                 <Badge variant="light" color="gray" leftSection={<IconMapPin size={12} />}>
                   {task.address}
                 </Badge>
-                
+
                 {(task.startTime || task.endTime) && (
                   <Badge variant="light" color="blue" leftSection={<IconClock size={12} />}>
                     {task.startTime} - {task.endTime}
@@ -69,7 +76,9 @@ const TaskList = ({ tasks, onDelete }) => {
                   <Divider my="sm" variant="dotted" />
                   <Group gap={8}>
                     <IconUser size={14} color="var(--mantine-color-dimmed)" />
-                    <Text size="xs" c="dimmed">Assigned to:</Text>
+                    <Text size="xs" c="dimmed">
+                      Assigned to:
+                    </Text>
                     <Text size="xs" fw={700} c="indigo">
                       {task.user.firstname} {task.user.lastname}
                     </Text>
@@ -77,11 +86,11 @@ const TaskList = ({ tasks, onDelete }) => {
                 </>
               )}
             </Box>
-            
+
             <Tooltip label="Delete Task">
-              <ActionIcon 
-                variant="subtle" 
-                color="red" 
+              <ActionIcon
+                variant="subtle"
+                color="red"
                 onClick={() => handleDeleteClick(task)}
                 className="group-hover-target"
               >
@@ -92,7 +101,7 @@ const TaskList = ({ tasks, onDelete }) => {
         </Card>
       ))}
     </Stack>
-  );
-};
+  )
+}
 
-export default TaskList;
+
