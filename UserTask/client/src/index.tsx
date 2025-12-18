@@ -7,10 +7,15 @@ import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { ModalsProvider } from '@mantine/modals'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+
+const ReactQueryDevtools =
+  process.env.NODE_ENV === 'development'
+    ? // eslint-disable-next-line @typescript-eslint/no-var-requires
+      require('@tanstack/react-query-devtools').ReactQueryDevtools
+    : null
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,7 +41,7 @@ root.render(
         <App />
       </ModalsProvider>
     </MantineProvider>
-    <ReactQueryDevtools initialIsOpen={false} />
+    {ReactQueryDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
   </QueryClientProvider>
 )
 

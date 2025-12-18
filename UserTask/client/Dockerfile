@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ ENV NODE_OPTIONS="--openssl-legacy-provider --max-old-space-size=4096"
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
 
 
 
