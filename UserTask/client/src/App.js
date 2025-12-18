@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import { notifications } from '@mantine/notifications';
+import { 
+  AppShell, 
+  Container, 
+  Grid, 
+  Title, 
+  Button, 
+  Paper, 
+  Stack, 
+  Group, 
+  ScrollArea, 
+  Text,
+  ActionIcon,
+  Tooltip,
+  Box,
+  rem
+} from '@mantine/core';
+import { IconRefresh, IconUsers, IconListDetails } from '@tabler/icons-react';
 import UserList from './UserList';
 import AddUserForm from './AddUserForm';
 import TaskList from './TaskList';
@@ -23,6 +40,11 @@ const App = () => {
       setUsers(response.data);
     } catch (e) {
       console.error(e);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to fetch users',
+        color: 'red',
+      });
     } finally {
       setIsFetchingUsers(false);
     }
@@ -35,6 +57,11 @@ const App = () => {
       setTasks(response.data);
     } catch (e) {
       console.error(e);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to fetch tasks',
+        color: 'red',
+      });
     } finally {
       setIsFetchingTasks(false);
     }
@@ -44,10 +71,18 @@ const App = () => {
     try {
       await axios.delete(`${TASK_SERVICE_URL}/${id}`);
       setTasks(tasks.filter(t => t.id !== id));
-      toast.success('Task deleted successfully');
+      notifications.show({
+        title: 'Success',
+        message: 'Task deleted successfully',
+        color: 'green',
+      });
     } catch (e) {
       console.error(e);
-      toast.error('Failed to delete task');
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to delete task',
+        color: 'red',
+      });
     }
   };
 
@@ -55,10 +90,18 @@ const App = () => {
     try {
       await axios.delete(`${USER_SERVICE_URL}/${id}`);
       setUsers(users.filter(u => u.id !== id));
-      toast.success('User deleted successfully');
+      notifications.show({
+        title: 'Success',
+        message: 'User deleted successfully',
+        color: 'green',
+      });
     } catch (e) {
       console.error(e);
-      toast.error('Failed to delete user');
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to delete user',
+        color: 'red',
+      });
     }
   };
 
@@ -68,58 +111,102 @@ const App = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-      <Toaster position="top-right" />
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-10">UserTask Manager</h1>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">Users</h2>
-                <button 
-                  onClick={fetchUsers} 
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-                >
-                  {isFetchingUsers ? 'Loading...' : 'Refresh'}
-                </button>
-              </div>
-              
-              <div className="mb-6 max-h-96 overflow-y-auto">
-                <UserList users={users} onDelete={removeUser} />
-              </div>
-              
-              <div className="border-t pt-6">
-                <AddUserForm user_service_url={USER_SERVICE_URL} onUserAdded={fetchUsers} />
-              </div>
-            </div>
-          </div>
+    <AppShell
+      header={{ height: 70 }}
+      padding="md"
+      bg="var(--mantine-color-gray-0)"
+    >
+      <AppShell.Header>
+        <Container size="xl" h="100%">
+          <Group h="100%" justify="space-between">
+            <Group>
+              <Box 
+                p={8} 
+                bg="blue.6" 
+                style={{ borderRadius: rem(8), display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <IconListDetails size={24} color="white" />
+              </Box>
+              <Title order={2} fw={900} style={{ letterSpacing: rem(-1) }}>
+                UserTask <Text span c="blue.6" inherit>Manager</Text>
+              </Title>
+            </Group>
+          </Group>
+        </Container>
+      </AppShell.Header>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">Tasks</h2>
-                <button 
-                  onClick={fetchTasks} 
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-                >
-                  {isFetchingTasks ? 'Loading...' : 'Refresh'}
-                </button>
-              </div>
-              
-              <div className="mb-6 max-h-96 overflow-y-auto">
-                <TaskList tasks={tasks} onDelete={removeTask} />
-              </div>
-              
-              <div className="border-t pt-6">
-                <AddTaskForm task_service_url={TASK_SERVICE_URL} onTaskAdded={fetchTasks} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <AppShell.Main>
+        <Container size="xl" py="xl">
+          <Grid gutter="xl">
+            {/* Users Column */}
+            <Grid.Col span={{ base: 12, lg: 6 }}>
+              <Paper withBorder shadow="md" radius="lg" p="xl" bg="white">
+                <Stack gap="lg">
+                  <Group justify="space-between">
+                    <Group gap="xs">
+                      <IconUsers size={24} color="var(--mantine-color-blue-6)" />
+                      <Title order={3}>Users</Title>
+                    </Group>
+                    <Tooltip label="Refresh users">
+                      <ActionIcon 
+                        variant="light" 
+                        size="lg" 
+                        onClick={fetchUsers} 
+                        loading={isFetchingUsers}
+                        color="blue"
+                      >
+                        <IconRefresh size={18} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Group>
+                  
+                  <ScrollArea h={400} type="hover" offsetScrollbars>
+                    <UserList users={users} onDelete={removeUser} />
+                  </ScrollArea>
+                  
+                  <Box mt="md">
+                    <AddUserForm user_service_url={USER_SERVICE_URL} onUserAdded={fetchUsers} />
+                  </Box>
+                </Stack>
+              </Paper>
+            </Grid.Col>
+
+            {/* Tasks Column */}
+            <Grid.Col span={{ base: 12, lg: 6 }}>
+              <Paper withBorder shadow="md" radius="lg" p="xl" bg="white">
+                <Stack gap="lg">
+                  <Group justify="space-between">
+                    <Group gap="xs">
+                      <IconListDetails size={24} color="var(--mantine-color-green-6)" />
+                      <Title order={3}>Tasks</Title>
+                    </Group>
+                    <Tooltip label="Refresh tasks">
+                      <ActionIcon 
+                        variant="light" 
+                        size="lg" 
+                        onClick={fetchTasks} 
+                        loading={isFetchingTasks}
+                        color="green"
+                      >
+                        <IconRefresh size={18} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Group>
+                  
+                  <ScrollArea h={400} type="hover" offsetScrollbars>
+                    <TaskList tasks={tasks} onDelete={removeTask} />
+                  </ScrollArea>
+                  
+                  <Box mt="md">
+                    <AddTaskForm task_service_url={TASK_SERVICE_URL} onTaskAdded={fetchTasks} />
+                  </Box>
+                </Stack>
+              </Paper>
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </AppShell.Main>
+    </AppShell>
   );
 };
 

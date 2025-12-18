@@ -9,8 +9,8 @@ RUN npm install
 
 COPY . .
 
-# Required for legacy OpenSSL support in Node 17+
-ENV NODE_OPTIONS=--openssl-legacy-provider
+# Required for legacy OpenSSL support in Node 17+ and increased memory limit
+ENV NODE_OPTIONS="--openssl-legacy-provider --max-old-space-size=4096"
 
 EXPOSE 3000
 
