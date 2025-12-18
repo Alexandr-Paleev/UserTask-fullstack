@@ -35,7 +35,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:5001
+      # In Docker network, client must reach backend by service name, not localhost
+      - REACT_APP_API_URL=http://server:5001
       - CHOKIDAR_USEPOLLING=true # Enable hot reloading in Docker
       - WDS_SOCKET_PORT=0 # Allow webpack dev server to work behind proxy if needed, usually helps
     stdin_open: true # Required for react-scripts start

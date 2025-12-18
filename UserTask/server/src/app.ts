@@ -4,7 +4,7 @@ import "reflect-metadata";
 
 class App {
   public app: express.Application;
-  public port = process.env.PORT || 5001;;
+  public port = process.env.PORT || 5001;
 
   constructor(controllers, port) {
     this.app = express();
@@ -18,7 +18,9 @@ class App {
     this.app.use(bodyParser.json());
 
     this.app.use(function(req, res, next) {
-      res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+      // Allow configuring origin for local/dev/docker without code changes
+      const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+      res.header("Access-Control-Allow-Origin", origin);
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, PATCH");
       next();

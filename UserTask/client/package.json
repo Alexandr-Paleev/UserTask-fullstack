@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@mantine/core": "^8.3.10",
     "@mantine/dates": "^8.3.10",
     "@mantine/form": "^8.3.10",
@@ -10,17 +11,24 @@
     "@mantine/modals": "^8.3.10",
     "@mantine/notifications": "^8.3.10",
     "@tabler/icons-react": "^3.36.0",
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query-devtools": "^5.91.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^1.13.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.68.0",
     "react-scripts": "^5.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.6.1"
+    "@types/node": "^18.19.70",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "babel-preset-env": "^1.6.1",
+    "typescript": "^5.4.5"
   },
   "scripts": {
     "start": "react-scripts start",

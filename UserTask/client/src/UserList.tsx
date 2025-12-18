@@ -1,24 +1,41 @@
-import React from 'react';
-import { Card, Avatar, Text, Badge, ActionIcon, Stack, Group, Tooltip, Box } from '@mantine/core';
-import { IconMapPin, IconPhone, IconBuildingCommunity, IconUser, IconTrash } from '@tabler/icons-react';
-import { modals } from '@mantine/modals';
+import React from 'react'
+import { ActionIcon, Avatar, Badge, Box, Card, Group, Stack, Text, Tooltip } from '@mantine/core'
+import {
+  IconBuildingCommunity,
+  IconMapPin,
+  IconPhone,
+  IconTrash,
+  IconUser,
+} from '@tabler/icons-react'
+import { modals } from '@mantine/modals'
+import type { User } from './types/entities'
 
-const UserList = ({ users, onDelete }) => {
-  const handleDeleteClick = (user) => {
+type UserListProps = {
+  users: User[]
+  onDelete?: (userId: number) => void
+}
+
+export default function UserList({ users, onDelete }: UserListProps) {
+  const handleDeleteClick = (user: User) => {
+    if (!onDelete) return
+
     modals.openConfirmModal({
       title: 'Delete user',
       centered: true,
       children: (
         <Text size="sm">
-          Are you sure you want to delete <b>{user.firstname} {user.lastname}</b>?
-          This action will also delete all tasks assigned to this user and cannot be undone.
+          Are you sure you want to delete{' '}
+          <b>
+            {user.firstname} {user.lastname}
+          </b>
+          ? This action will also delete all tasks assigned to this user and cannot be undone.
         </Text>
       ),
       labels: { confirm: 'Delete user', cancel: 'No, keep it' },
       confirmProps: { color: 'red' },
       onConfirm: () => onDelete(user.id),
-    });
-  };
+    })
+  }
 
   if (!users || users.length === 0) {
     return (
@@ -28,7 +45,7 @@ const UserList = ({ users, onDelete }) => {
           <Text c="dimmed">No users found.</Text>
         </Stack>
       </Box>
-    );
+    )
   }
 
   return (
@@ -36,13 +53,14 @@ const UserList = ({ users, onDelete }) => {
       {users.map((user) => (
         <Card key={user.id} withBorder padding="md" radius="md" shadow="sm" className="group">
           <Group wrap="nowrap" align="flex-start">
-            <Avatar 
-              size="lg" 
-              radius="xl" 
-              variant="gradient" 
+            <Avatar
+              size="lg"
+              radius="xl"
+              variant="gradient"
               gradient={{ from: 'blue', to: 'indigo' }}
             >
-              {user.firstname.charAt(0)}{user.lastname.charAt(0)}
+              {user.firstname.charAt(0)}
+              {user.lastname.charAt(0)}
             </Avatar>
 
             <Box style={{ flex: 1 }}>
@@ -56,9 +74,9 @@ const UserList = ({ users, onDelete }) => {
                   </Badge>
                   {onDelete && (
                     <Tooltip label="Delete User">
-                      <ActionIcon 
-                        variant="subtle" 
-                        color="red" 
+                      <ActionIcon
+                        variant="subtle"
+                        color="red"
                         onClick={() => handleDeleteClick(user)}
                         className="group-hover-target"
                       >
@@ -86,7 +104,11 @@ const UserList = ({ users, onDelete }) => {
 
               {user.city && (
                 <Group gap={5} mt="xs">
-                  <IconBuildingCommunity size={16} stroke={1.5} color="var(--mantine-color-indigo-6)" />
+                  <IconBuildingCommunity
+                    size={16}
+                    stroke={1.5}
+                    color="var(--mantine-color-indigo-6)"
+                  />
                   <Text size="sm" fw={500} c="indigo">
                     {user.city.title}
                   </Text>
@@ -97,7 +119,7 @@ const UserList = ({ users, onDelete }) => {
         </Card>
       ))}
     </Stack>
-  );
-};
+  )
+}
 
-export default UserList;
+
