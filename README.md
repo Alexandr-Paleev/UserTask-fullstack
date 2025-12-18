@@ -12,8 +12,10 @@ A complete CRUD application for managing Users and Tasks, built with a modern st
 
 ### Frontend
 *   **React** (Hooks)
-*   **Tailwind CSS**
+*   **Mantine** (UI)
+*   **TanStack Query** (server-state)
 *   **React Hook Form** + **Zod**
+*   **Vite** (build tool)
 
 ### DevOps
 *   **Docker** & **Docker Compose**
@@ -56,11 +58,11 @@ If you want to run services locally on your machine.
 1.  Navigate to `UserTask/client`.
 2.  Install dependencies: `npm install`.
 3.  **Configure Environment:**
-    Copy the example file to `.env`:
+    Create `.env` if needed and set API base URL:
     ```bash
-    cp .env.example .env
+    VITE_API_URL=http://localhost:5001
     ```
-4.  Run: `npm start`.
+4.  Run: `npm run dev`.
 
 ## Features
 *   **Users:** Create users linked to specific cities.
