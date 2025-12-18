@@ -1,9 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import "reflect-metadata";
-import { getRepository } from 'typeorm';
-import  User from './models/user.entity';
- 
+
 class App {
   public app: express.Application;
   public port = process.env.PORT || 5001;;
