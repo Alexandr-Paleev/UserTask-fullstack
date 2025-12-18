@@ -5,14 +5,15 @@ Modern React frontend for the UserTask application.
 ## Tech Stack
 
 *   **React** (Functional Components + Hooks)
-*   **Tailwind CSS** (Styling)
+*   **Mantine** (UI)
+*   **TanStack Query** (server-state)
 *   **React Hook Form** + **Zod** (Form handling & Validation)
-*   **Lucide React** (Icons)
 *   **Axios** (API requests)
+*   **Vite** (Build tool)
 
 ## Prerequisites
 
-*   Node.js (v18+)
+*   Node.js (v20+ recommended for Vite 7)
 *   Backend server running on port 5001
 
 ## Getting Started
@@ -24,21 +25,13 @@ Modern React frontend for the UserTask application.
 
 2.  **Environment Setup:**
     The application uses `.env` file for configuration.
-    
-    Ensure `REACT_APP_API_URL` is set in `.env` (default is `http://localhost:5001`).
+
+    Ensure `VITE_API_URL` is set in `.env` (default fallback is `http://localhost:5001`).
 
 3.  **Start the development server:**
     ```bash
-    # For Node 17+ (openssl legacy provider required for this webpack version)
-    export NODE_OPTIONS=--openssl-legacy-provider
-    npm start
+    npm run dev
     ```
-
-    Or simply:
-    ```bash
-    npm start
-    ```
-    *(If you are using an older Node version)*
 
 The app will run at [http://localhost:3000](http://localhost:3000).
 
