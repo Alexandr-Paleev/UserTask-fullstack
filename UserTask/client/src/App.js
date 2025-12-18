@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { notifications } from '@mantine/notifications';
 import { 
@@ -32,7 +32,7 @@ const App = () => {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [isFetchingTasks, setIsFetchingTasks] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setIsFetchingUsers(true);
     try {
       const response = await axios.get(USER_SERVICE_URL);
@@ -47,9 +47,9 @@ const App = () => {
     } finally {
       setIsFetchingUsers(false);
     }
-  };
+  }, []);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setIsFetchingTasks(true);
     try {
       const response = await axios.get(TASK_SERVICE_URL);
@@ -64,7 +64,7 @@ const App = () => {
     } finally {
       setIsFetchingTasks(false);
     }
-  };
+  }, []);
 
   const removeTask = async (id) => {
     try {
@@ -107,7 +107,7 @@ const App = () => {
   useEffect(() => {
     fetchUsers();
     fetchTasks();
-  }, []);
+  }, [fetchUsers, fetchTasks]);
 
   return (
     <AppShell
