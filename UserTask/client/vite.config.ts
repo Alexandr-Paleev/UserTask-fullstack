@@ -18,7 +18,13 @@ export default defineConfig({
       output: {
         manualChunks: {
           react: ['react', 'react-dom'],
-          mantine: ['@mantine/core', '@mantine/hooks', '@mantine/modals', '@mantine/notifications', '@mantine/dates'],
+          mantine: [
+            '@mantine/core',
+            '@mantine/hooks',
+            '@mantine/modals',
+            '@mantine/notifications',
+            '@mantine/dates',
+          ],
           tanstack: ['@tanstack/react-query', '@tanstack/react-query-devtools'],
           forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
         },
@@ -26,5 +32,3 @@ export default defineConfig({
     },
   },
 })
-
-

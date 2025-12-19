@@ -12,5 +12,3 @@ export const cityKeys = {
   all: ['cities'] as const,
   lists: () => [...cityKeys.all, 'list'] as const,
 }
-
-

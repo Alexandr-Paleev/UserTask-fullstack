@@ -1,1 +1,22 @@
-{}
+{
+  "name": "usertask-fullstack",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,green \"cd UserTask/server && JWT_SECRET=${JWT_SECRET:-change_me_locally_please} CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000} npm run dev\" \"cd UserTask/client && VITE_API_URL=${VITE_API_URL:-http://localhost:5001} npm run dev\"",
+    "lint": "eslint \"UserTask/**/*.{ts,tsx,js}\"",
+    "format": "prettier --write \"README.md\" \"UserTask/**/*.{ts,tsx,js,json,md,yml,yaml}\""
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "8.19.0",
+    "@typescript-eslint/parser": "8.19.0",
+    "@eslint/js": "9.17.0",
+    "concurrently": "9.2.0",
+    "eslint": "9.17.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.3",
+    "eslint-plugin-react-hooks": "5.1.0",
+    "globals": "15.14.0",
+    "prettier": "3.4.2"
+  }
+}

@@ -38,5 +38,3 @@ export type CreateTaskPayload = {
   endTime: string
   user: { id: number }
 }
-
-
