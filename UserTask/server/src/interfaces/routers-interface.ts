@@ -1,8 +1,8 @@
-import { Router } from 'express';
- 
+import { Router } from 'express'
+
 interface Routers {
-  path: string;
-  router: Router;
+  path: string
+  router: Router
 }
- 
-export default Routers;
+
+export default Routers

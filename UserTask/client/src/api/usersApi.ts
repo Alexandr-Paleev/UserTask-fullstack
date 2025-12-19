@@ -15,5 +15,3 @@ export async function deleteUser(userId: number): Promise<unknown> {
   const res = await apiClient.delete(`/user/${userId}`)
   return res.data
 }
-
-

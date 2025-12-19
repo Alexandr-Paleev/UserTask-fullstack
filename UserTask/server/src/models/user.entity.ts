@@ -1,29 +1,37 @@
-import { Column, Entity, OneToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Task from './task.entity';
-import City from './city.entity';
+import { Column, Entity, OneToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import Task from './task.entity'
+import City from './city.entity'
 
 @Entity()
 class User {
   @PrimaryGeneratedColumn()
-  public id?: number;
+  public id?: number
+
+  // Multi-tenant ownership: records belong to an authenticated account
+  @Column({ type: 'int', nullable: true })
+  public ownerId?: number
+
+  // Demo records are visible to everyone but not editable/deletable
+  @Column({ default: false })
+  public isDemo: boolean
 
   @Column()
-  public firstname: string;
+  public firstname: string
 
   @Column()
-  public lastname: string;
+  public lastname: string
 
   @Column()
-  public address: string;
+  public address: string
 
   @Column()
-  public phone: string;
+  public phone: string
 
   @ManyToOne(() => City, (city: City) => city.users)
-  public city: City;
+  public city: City
 
   @OneToMany(() => Task, (task: Task) => task.user)
-  public tasks: Task[];
+  public tasks: Task[]
 }
 
-export default User;
+export default User

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
@@ -11,12 +11,6 @@ import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
-const ReactQueryDevtools =
-  process.env.NODE_ENV === 'development'
-    ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-      require('@tanstack/react-query-devtools').ReactQueryDevtools
-    : null
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -27,24 +21,43 @@ const queryClient = new QueryClient({
   },
 })
 
+function Root() {
+  const [Devtools, setDevtools] = useState<React.ComponentType<{ initialIsOpen?: boolean }> | null>(
+    null,
+  )
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return
+
+    let mounted = true
+    import('@tanstack/react-query-devtools').then((m) => {
+      if (!mounted) return
+      setDevtools(() => m.ReactQueryDevtools)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider defaultColorScheme="light">
+        <Notifications />
+        <ModalsProvider>
+          <App />
+        </ModalsProvider>
+      </MantineProvider>
+      {Devtools ? <Devtools initialIsOpen={false} /> : null}
+    </QueryClientProvider>
+  )
+}
+
 const container = document.getElementById('root')
 if (!container) {
   throw new Error('Root element (#root) not found')
 }
 
 const root = createRoot(container)
-root.render(
-  <QueryClientProvider client={queryClient}>
-    <MantineProvider defaultColorScheme="light">
-      <Notifications />
-      <ModalsProvider>
-        <App />
-      </ModalsProvider>
-    </MantineProvider>
-    {ReactQueryDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
-  </QueryClientProvider>
-)
+root.render(<Root />)
 
 serviceWorker.unregister()
-
-

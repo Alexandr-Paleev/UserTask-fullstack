@@ -1,28 +1,34 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import User from './user.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import User from './user.entity'
 
 @Entity()
 class Task {
   @PrimaryGeneratedColumn()
-  public id?: number;
+  public id?: number
+
+  @Column({ type: 'int', nullable: true })
+  public ownerId?: number
+
+  @Column({ default: false })
+  public isDemo: boolean
 
   @Column()
-  public title: string;
+  public title: string
 
   @Column()
-  public description: string;
+  public description: string
 
   @Column()
-  public address: string;
+  public address: string
 
   @Column()
-  public startTime: string;
+  public startTime: string
 
   @Column()
-  public endTime: string;
+  public endTime: string
 
   @ManyToOne(() => User, (user: User) => user.tasks)
-  public user: User;
+  public user: User
 }
 
-export default Task;
+export default Task

@@ -17,8 +17,8 @@ export default function TaskList({ tasks, onDelete }: TaskListProps) {
       centered: true,
       children: (
         <Text size="sm">
-          Are you sure you want to delete task <b>&quot;{task.title}&quot;</b>? This action cannot be
-          undone.
+          Are you sure you want to delete task <b>&quot;{task.title}&quot;</b>? This action cannot
+          be undone.
         </Text>
       ),
       labels: { confirm: 'Delete task', cancel: 'No, keep it' },
@@ -103,5 +103,3 @@ export default function TaskList({ tasks, onDelete }: TaskListProps) {
     </Stack>
   )
 }
-
-
