@@ -1,4 +1,3 @@
-import React from 'react'
 import { ActionIcon, Avatar, Badge, Box, Card, Group, Stack, Text, Tooltip } from '@mantine/core'
 import {
   IconBuildingCommunity,

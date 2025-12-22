@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button, Group, Paper, Stack, Text, TextInput, Title } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
+import { useQueryClient } from '@tanstack/react-query'
 import { login, register } from '../api/authApi'
 import { getApiErrorMessage } from '../utils/getApiErrorMessage'
 
@@ -21,6 +22,7 @@ type AuthGateProps = {
 export function AuthGate({ children }: AuthGateProps) {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [isAuthed, setIsAuthed] = useState(Boolean(localStorage.getItem('auth_token')))
+  const queryClient = useQueryClient()
 
   const {
     register: rhfRegister,
@@ -39,6 +41,7 @@ export function AuthGate({ children }: AuthGateProps) {
           : await register(values.email, values.password)
 
       localStorage.setItem('auth_token', result.token)
+      queryClient.clear()
       notifications.show({ title: 'Success', message: 'Signed in', color: 'green' })
       setIsAuthed(true)
     } catch (e) {
@@ -48,14 +51,18 @@ export function AuthGate({ children }: AuthGateProps) {
 
   const logout = () => {
     localStorage.removeItem('auth_token')
+    queryClient.clear()
     setIsAuthed(false)
   }
 
   useEffect(() => {
-    const onLogout = () => setIsAuthed(false)
+    const onLogout = () => {
+      queryClient.clear()
+      setIsAuthed(false)
+    }
     window.addEventListener('auth:logout', onLogout)
     return () => window.removeEventListener('auth:logout', onLogout)
-  }, [])
+  }, [queryClient])
 
   if (isAuthed) {
     return (
