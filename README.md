@@ -8,12 +8,6 @@
 
 A modern fullstack CRUD application for managing Users and Tasks with multi-tenant architecture, built with TypeScript, React, and PostgreSQL.
 
-## 🚀 Live Demo
-
-Try it instantly in your browser (no installation required):
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Alexandr-Paleev/UserTask-fullstack)
-
 ## 📸 Screenshots
 
 <div align="center">
