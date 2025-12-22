@@ -14,3 +14,6 @@ export async function login(email: string, password: string): Promise<AuthRespon
   const res = await apiClient.post<AuthResponse>('/auth/login', { email, password })
   return res.data
 }
+
+
+

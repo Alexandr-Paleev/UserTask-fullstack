@@ -42,7 +42,7 @@ function Root() {
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider defaultColorScheme="light">
-        <Notifications />
+        <Notifications position="top-right" />
         <ModalsProvider>
           <App />
         </ModalsProvider>

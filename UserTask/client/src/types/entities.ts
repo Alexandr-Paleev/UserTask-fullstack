@@ -27,7 +27,7 @@ export type CreateUserPayload = {
   lastname: string
   address: string
   phone: string
-  city: { id: number }
+  city: { id?: number; title?: string }
 }
 
 export type CreateTaskPayload = {
@@ -38,3 +38,6 @@ export type CreateTaskPayload = {
   endTime: string
   user: { id: number }
 }
+
+
+

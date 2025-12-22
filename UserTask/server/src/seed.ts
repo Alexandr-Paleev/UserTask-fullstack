@@ -5,7 +5,6 @@ import config from './ormconfig'
 import City from './models/city.entity'
 import User from './models/user.entity'
 import Task from './models/task.entity'
-
 ;(async () => {
   try {
     await createConnection(config)

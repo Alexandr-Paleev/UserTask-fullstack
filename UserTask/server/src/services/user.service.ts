@@ -1,14 +1,31 @@
 import { getRepository } from 'typeorm'
 import User from '../models/user.entity'
+import City from '../models/city.entity'
 
 class UserService {
   private userRepository
+  private cityRepository
 
   constructor() {
     this.userRepository = getRepository(User)
+    this.cityRepository = getRepository(City)
   }
 
   public createUser = async (userData, accountId: number) => {
+    // 1. Handle city find or create
+    let city = null
+    if (userData.city) {
+      if (userData.city.id) {
+        city = await this.cityRepository.findOne(userData.city.id)
+      } else if (userData.city.title) {
+        city = await this.cityRepository.findOne({ where: { title: userData.city.title } })
+        if (!city) {
+          city = this.cityRepository.create({ title: userData.city.title })
+          await this.cityRepository.save(city)
+        }
+      }
+    }
+
     const existingUserByPhone = await this.userRepository.findOne({
       where: { phone: userData.phone },
     })
@@ -32,6 +49,7 @@ class UserService {
 
     const newUser = this.userRepository.create({
       ...userData,
+      city: city, // Use the resolved city
       ownerId: accountId,
       isDemo: false,
     })

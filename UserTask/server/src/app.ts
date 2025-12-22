@@ -21,8 +21,14 @@ class App {
       // Allow configuring origin for local/dev/docker without code changes
       const origin = process.env.CORS_ORIGIN || 'http://localhost:3000'
       res.header('Access-Control-Allow-Origin', origin)
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+      res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+      )
       res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH')
+      if (req.method === 'OPTIONS') {
+        return res.sendStatus(204)
+      }
       next()
     })
   }

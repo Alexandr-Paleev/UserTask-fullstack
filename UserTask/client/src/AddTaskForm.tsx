@@ -120,8 +120,11 @@ export default function AddTaskForm() {
                 required
                 searchable
                 disabled={usersQuery.isLoading || usersQuery.isError}
-                value={field.value}
+                name={field.name}
+                value={field.value || null}
                 onChange={(v) => field.onChange(v ?? '')}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.userId?.message}
               />
             )}
