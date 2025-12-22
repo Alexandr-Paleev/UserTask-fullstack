@@ -2,12 +2,15 @@ import { getRepository } from 'typeorm'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import Account from '../models/account.entity'
+import CityService from './city.service'
 
 class AuthService {
   private accountRepository
+  private cityService: CityService
 
   constructor() {
     this.accountRepository = getRepository(Account)
+    this.cityService = new CityService()
   }
 
   public register = async (email: string, password: string) => {
@@ -25,6 +28,13 @@ class AuthService {
       passwordHash,
     })
     await this.accountRepository.save(account)
+
+    // Seed cities on first auth (best effort, does not block register)
+    try {
+      await this.cityService.ensureSeeded()
+    } catch (e) {
+      console.warn('Failed to seed cities on register:', e)
+    }
 
     return this.issueToken(account.id)
   }
@@ -45,6 +55,13 @@ class AuthService {
       throw error
     }
 
+    // Seed cities on first auth (best effort, does not block login)
+    try {
+      await this.cityService.ensureSeeded()
+    } catch (e) {
+      console.warn('Failed to seed cities on login:', e)
+    }
+
     return this.issueToken(account.id)
   }
 
@@ -62,6 +79,3 @@ class AuthService {
 }
 
 export default AuthService
-
-
-

@@ -1,4 +1,3 @@
-import React from 'react'
 import { ActionIcon, Badge, Card, Divider, Group, Stack, Text, Tooltip, Box } from '@mantine/core'
 import { IconCalendar, IconClock, IconMapPin, IconTrash, IconUser } from '@tabler/icons-react'
 import { modals } from '@mantine/modals'

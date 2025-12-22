@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ActionIcon,
   AppShell,
@@ -23,7 +22,7 @@ import { useTasksQuery, useDeleteTaskMutation } from './queries/tasksQueries'
 import { useUsersQuery, useDeleteUserMutation } from './queries/usersQueries'
 import { AuthGate } from './components/AuthGate'
 
-export default function App() {
+function AppContent() {
   const usersQuery = useUsersQuery()
   const tasksQuery = useTasksQuery()
 
@@ -33,6 +32,72 @@ export default function App() {
   const users = usersQuery.data ?? []
   const tasks = tasksQuery.data ?? []
 
+  return (
+    <Grid gutter="xl">
+      <Grid.Col span={{ base: 12, lg: 6 }}>
+        <Paper withBorder shadow="md" radius="lg" p="xl" bg="white">
+          <Group justify="space-between" mb="lg">
+            <Group gap="xs">
+              <IconUsers size={24} color="var(--mantine-color-blue-6)" />
+              <Title order={3}>Users</Title>
+            </Group>
+            <Tooltip label="Refresh users">
+              <ActionIcon
+                variant="light"
+                size="lg"
+                onClick={() => usersQuery.refetch()}
+                loading={usersQuery.isFetching}
+                color="blue"
+              >
+                <IconRefresh size={18} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+
+          <ScrollArea h={400} type="hover" offsetScrollbars>
+            <UserList users={users} onDelete={(id) => deleteUserMutation.mutate(id)} />
+          </ScrollArea>
+
+          <Box mt="md">
+            <AddUserForm />
+          </Box>
+        </Paper>
+      </Grid.Col>
+
+      <Grid.Col span={{ base: 12, lg: 6 }}>
+        <Paper withBorder shadow="md" radius="lg" p="xl" bg="white">
+          <Group justify="space-between" mb="lg">
+            <Group gap="xs">
+              <IconListDetails size={24} color="var(--mantine-color-green-6)" />
+              <Title order={3}>Tasks</Title>
+            </Group>
+            <Tooltip label="Refresh tasks">
+              <ActionIcon
+                variant="light"
+                size="lg"
+                onClick={() => tasksQuery.refetch()}
+                loading={tasksQuery.isFetching}
+                color="green"
+              >
+                <IconRefresh size={18} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+
+          <ScrollArea h={400} type="hover" offsetScrollbars>
+            <TaskList tasks={tasks} onDelete={(id) => deleteTaskMutation.mutate(id)} />
+          </ScrollArea>
+
+          <Box mt="md">
+            <AddTaskForm />
+          </Box>
+        </Paper>
+      </Grid.Col>
+    </Grid>
+  )
+}
+
+export default function App() {
   return (
     <AppShell header={{ height: 70 }} padding="md" bg="var(--mantine-color-gray-0)">
       <AppShell.Header>
@@ -65,67 +130,7 @@ export default function App() {
       <AppShell.Main>
         <Container size="xl" py="xl">
           <AuthGate>
-            <Grid gutter="xl">
-              <Grid.Col span={{ base: 12, lg: 6 }}>
-                <Paper withBorder shadow="md" radius="lg" p="xl" bg="white">
-                  <Group justify="space-between" mb="lg">
-                    <Group gap="xs">
-                      <IconUsers size={24} color="var(--mantine-color-blue-6)" />
-                      <Title order={3}>Users</Title>
-                    </Group>
-                    <Tooltip label="Refresh users">
-                      <ActionIcon
-                        variant="light"
-                        size="lg"
-                        onClick={() => usersQuery.refetch()}
-                        loading={usersQuery.isFetching}
-                        color="blue"
-                      >
-                        <IconRefresh size={18} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Group>
-
-                  <ScrollArea h={400} type="hover" offsetScrollbars>
-                    <UserList users={users} onDelete={(id) => deleteUserMutation.mutate(id)} />
-                  </ScrollArea>
-
-                  <Box mt="md">
-                    <AddUserForm />
-                  </Box>
-                </Paper>
-              </Grid.Col>
-
-              <Grid.Col span={{ base: 12, lg: 6 }}>
-                <Paper withBorder shadow="md" radius="lg" p="xl" bg="white">
-                  <Group justify="space-between" mb="lg">
-                    <Group gap="xs">
-                      <IconListDetails size={24} color="var(--mantine-color-green-6)" />
-                      <Title order={3}>Tasks</Title>
-                    </Group>
-                    <Tooltip label="Refresh tasks">
-                      <ActionIcon
-                        variant="light"
-                        size="lg"
-                        onClick={() => tasksQuery.refetch()}
-                        loading={tasksQuery.isFetching}
-                        color="green"
-                      >
-                        <IconRefresh size={18} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Group>
-
-                  <ScrollArea h={400} type="hover" offsetScrollbars>
-                    <TaskList tasks={tasks} onDelete={(id) => deleteTaskMutation.mutate(id)} />
-                  </ScrollArea>
-
-                  <Box mt="md">
-                    <AddTaskForm />
-                  </Box>
-                </Paper>
-              </Grid.Col>
-            </Grid>
+            <AppContent />
           </AuthGate>
         </Container>
       </AppShell.Main>

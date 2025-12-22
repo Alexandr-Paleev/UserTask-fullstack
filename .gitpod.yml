@@ -1,0 +1,35 @@
+tasks:
+  - name: Setup and Start
+    init: |
+      cd UserTask
+      export JWT_SECRET="gitpod_demo_secret_key_12345"
+      export CORS_ORIGIN="*"
+      docker compose up -d
+      gp await-port 5001
+      sleep 5
+      docker exec -it usertask-server npm run seed
+    command: |
+      echo "🚀 UserTask Manager is ready!"
+      echo "👉 Open frontend: http://localhost:3000"
+      echo "📊 Backend API: http://localhost:5001"
+      echo ""
+      echo "Demo credentials:"
+      echo "  Email: demo@example.com"
+      echo "  Password: 12345678"
+      gp preview http://localhost:3000
+
+ports:
+  - port: 3000
+    onOpen: open-preview
+    visibility: public
+  - port: 5001
+    onOpen: ignore
+    visibility: public
+  - port: 5432
+    onOpen: ignore
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
+

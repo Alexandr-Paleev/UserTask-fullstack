@@ -12,7 +12,6 @@ class UserService {
   }
 
   public createUser = async (userData, accountId: number) => {
-    // 1. Handle city find or create
     let city = null
     if (userData.city) {
       if (userData.city.id) {
@@ -27,10 +26,10 @@ class UserService {
     }
 
     const existingUserByPhone = await this.userRepository.findOne({
-      where: { phone: userData.phone },
+      where: { phone: userData.phone, ownerId: accountId },
     })
     if (existingUserByPhone) {
-      const error: any = new Error('User with this phone number already exists!')
+      const error: any = new Error('You already have a user with this phone number!')
       error.status = 409
       throw error
     }
@@ -39,17 +38,18 @@ class UserService {
       where: {
         firstname: userData.firstname,
         lastname: userData.lastname,
+        ownerId: accountId,
       },
     })
     if (existingUserByName) {
-      const error: any = new Error('User with this name already exists!')
+      const error: any = new Error('You already have a user with this name!')
       error.status = 409
       throw error
     }
 
     const newUser = this.userRepository.create({
       ...userData,
-      city: city, // Use the resolved city
+      city: city,
       ownerId: accountId,
       isDemo: false,
     })
