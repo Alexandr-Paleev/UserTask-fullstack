@@ -39,10 +39,25 @@ export default function AddUserForm() {
     },
   })
 
-  const cityOptions = (citiesQuery.data ?? []).map((city) => ({
-    value: city.id.toString(),
-    label: city.title,
-  }))
+  const cityOptions =
+    citiesQuery.data && citiesQuery.data.length > 0
+      ? citiesQuery.data.map((city) => ({
+          value: city.title,
+          label: city.title,
+        }))
+      : [
+          { value: 'London', label: 'London' },
+          { value: 'Paris', label: 'Paris' },
+          { value: 'Berlin', label: 'Berlin' },
+          { value: 'Rome', label: 'Rome' },
+          { value: 'Madrid', label: 'Madrid' },
+          { value: 'Vienna', label: 'Vienna' },
+          { value: 'Prague', label: 'Prague' },
+          { value: 'Warsaw', label: 'Warsaw' },
+          { value: 'Amsterdam', label: 'Amsterdam' },
+          { value: 'Brussels', label: 'Brussels' },
+          { value: 'Kyiv', label: 'Kyiv' },
+        ]
 
   const onSubmit = async (values: AddUserFormValues) => {
     await createUserMutation.mutateAsync({
@@ -50,7 +65,7 @@ export default function AddUserForm() {
       lastname: values.lastname,
       address: values.address,
       phone: values.phone,
-      city: { id: Number(values.cityId) },
+      city: { title: values.cityId },
     })
     reset()
   }
@@ -109,8 +124,11 @@ export default function AddUserForm() {
                   required
                   searchable
                   disabled={citiesQuery.isLoading || citiesQuery.isError}
-                  value={field.value}
+                  name={field.name}
+                  value={field.value || null}
                   onChange={(v) => field.onChange(v ?? '')}
+                  onBlur={field.onBlur}
+                  ref={field.ref}
                   error={errors.cityId?.message}
                 />
               )}

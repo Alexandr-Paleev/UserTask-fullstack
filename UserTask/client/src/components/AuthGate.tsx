@@ -71,45 +71,47 @@ export function AuthGate({ children }: AuthGateProps) {
   }
 
   return (
-    <Paper withBorder p="xl" radius="lg" shadow="md">
-      <Stack gap="md">
-        <Title order={2}>{mode === 'login' ? 'Login' : 'Register'}</Title>
-        <Text c="dimmed">
-          {mode === 'login'
-            ? 'Sign in to see only your data (plus demo records).'
-            : 'Create an account to manage your own users and tasks.'}
-        </Text>
+    <Group justify="center" align="center" style={{ minHeight: '60vh' }}>
+      <Paper withBorder p="xl" radius="lg" shadow="md" style={{ maxWidth: 400, width: '100%' }}>
+        <Stack gap="md">
+          <Title order={2}>{mode === 'login' ? 'Login' : 'Register'}</Title>
+          <Text c="dimmed">
+            {mode === 'login'
+              ? 'Sign in to see only your data (plus demo records).'
+              : 'Create an account to manage your own users and tasks.'}
+          </Text>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack gap="sm">
-            <TextInput
-              label="Email"
-              placeholder="you@example.com"
-              {...rhfRegister('email')}
-              error={errors.email?.message}
-            />
-            <TextInput
-              label="Password"
-              type="password"
-              placeholder="********"
-              {...rhfRegister('password')}
-              error={errors.password?.message}
-            />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack gap="sm">
+              <TextInput
+                label="Email"
+                placeholder="you@example.com"
+                {...rhfRegister('email')}
+                error={errors.email?.message}
+              />
+              <TextInput
+                label="Password"
+                type="password"
+                placeholder="********"
+                {...rhfRegister('password')}
+                error={errors.password?.message}
+              />
 
-            <Button type="submit" loading={isSubmitting}>
-              {mode === 'login' ? 'Login' : 'Register'}
-            </Button>
+              <Button type="submit" loading={isSubmitting}>
+                {mode === 'login' ? 'Login' : 'Register'}
+              </Button>
 
-            <Button
-              type="button"
-              variant="light"
-              onClick={() => setMode((m) => (m === 'login' ? 'register' : 'login'))}
-            >
-              {mode === 'login' ? 'Need an account? Register' : 'Already have an account? Login'}
-            </Button>
-          </Stack>
-        </form>
-      </Stack>
-    </Paper>
+              <Button
+                type="button"
+                variant="light"
+                onClick={() => setMode((m) => (m === 'login' ? 'register' : 'login'))}
+              >
+                {mode === 'login' ? 'Need an account? Register' : 'Already have an account? Login'}
+              </Button>
+            </Stack>
+          </form>
+        </Stack>
+      </Paper>
+    </Group>
   )
 }

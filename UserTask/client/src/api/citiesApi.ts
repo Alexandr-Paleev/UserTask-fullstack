@@ -5,3 +5,6 @@ export async function getCities(): Promise<City[]> {
   const res = await apiClient.get<City[]>('/city')
   return res.data
 }
+
+
+
