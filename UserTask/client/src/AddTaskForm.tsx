@@ -18,7 +18,11 @@ const schema = z.object({
 
 type AddTaskFormValues = z.infer<typeof schema>
 
-export default function AddTaskForm() {
+type AddTaskFormProps = {
+  onSuccess?: () => void
+}
+
+export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
   const usersQuery = useUsersQuery()
   const createTaskMutation = useCreateTaskMutation()
 
@@ -55,92 +59,86 @@ export default function AddTaskForm() {
       user: { id: Number(values.userId) },
     })
     reset()
+    onSuccess?.()
   }
 
   return (
-    <Paper withBorder p="md" radius="md" bg="var(--mantine-color-gray-0)">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Group mb="md">
-          <IconPlus size={20} color="var(--mantine-color-green-6)" />
-          <Title order={4}>New Task</Title>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Stack gap="sm">
+        <TextInput
+          label="Title"
+          placeholder="e.g. Weekly Meeting"
+          required
+          {...register('title')}
+          error={errors.title?.message}
+        />
+
+        <Textarea
+          label="Description"
+          placeholder="Task details..."
+          required
+          rows={2}
+          {...register('description')}
+          error={errors.description?.message}
+        />
+
+        <TextInput
+          label="Address"
+          placeholder="Office Room 302"
+          required
+          {...register('address')}
+          error={errors.address?.message}
+        />
+
+        <Group grow>
+          <TextInput
+            type="time"
+            label="Start Time"
+            required
+            {...register('startTime')}
+            error={errors.startTime?.message}
+          />
+          <TextInput
+            type="time"
+            label="End Time"
+            required
+            {...register('endTime')}
+            error={errors.endTime?.message}
+          />
         </Group>
 
-        <Stack gap="sm">
-          <TextInput
-            label="Title"
-            placeholder="e.g. Weekly Meeting"
-            required
-            {...register('title')}
-            error={errors.title?.message}
-          />
-
-          <Textarea
-            label="Description"
-            placeholder="Task details..."
-            required
-            rows={2}
-            {...register('description')}
-            error={errors.description?.message}
-          />
-
-          <TextInput
-            label="Address"
-            placeholder="Office Room 302"
-            required
-            {...register('address')}
-            error={errors.address?.message}
-          />
-
-          <Group grow>
-            <TextInput
-              type="time"
-              label="Start Time"
+        <Controller
+          name="userId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Assign to User"
+              placeholder={usersQuery.isLoading ? 'Loading users...' : 'Select a user'}
+              data={userOptions}
               required
-              {...register('startTime')}
-              error={errors.startTime?.message}
+              searchable
+              disabled={usersQuery.isLoading || usersQuery.isError}
+              name={field.name}
+              value={field.value || null}
+              onChange={(v) => field.onChange(v ?? '')}
+              onBlur={field.onBlur}
+              ref={field.ref}
+              error={errors.userId?.message}
             />
-            <TextInput
-              type="time"
-              label="End Time"
-              required
-              {...register('endTime')}
-              error={errors.endTime?.message}
-            />
-          </Group>
+          )}
+        />
 
-          <Controller
-            name="userId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                label="Assign to User"
-                placeholder={usersQuery.isLoading ? 'Loading users...' : 'Select a user'}
-                data={userOptions}
-                required
-                searchable
-                disabled={usersQuery.isLoading || usersQuery.isError}
-                name={field.name}
-                value={field.value || null}
-                onChange={(v) => field.onChange(v ?? '')}
-                onBlur={field.onBlur}
-                ref={field.ref}
-                error={errors.userId?.message}
-              />
-            )}
-          />
-
-          <Button
-            type="submit"
-            loading={isSubmitting || createTaskMutation.isPending}
-            fullWidth
-            mt="md"
-            gradient={{ from: 'teal', to: 'lime', deg: 105 }}
-            variant="gradient"
-          >
-            Create Task
-          </Button>
-        </Stack>
-      </form>
-    </Paper>
+        <Button
+          type="submit"
+          loading={isSubmitting || createTaskMutation.isPending}
+          fullWidth
+          mt="md"
+          gradient={{ from: 'teal', to: 'lime', deg: 105 }}
+          variant="gradient"
+        >
+          Create Task
+        </Button>
+      </Stack>
+    </form>
   )
 }

@@ -15,5 +15,16 @@ export async function login(email: string, password: string): Promise<AuthRespon
   return res.data
 }
 
+export async function requestPasswordReset(email: string): Promise<{ message: string }> {
+  const res = await apiClient.post<{ message: string }>('/auth/forgot-password', { email })
+  return res.data
+}
+
+export async function resetPassword(token: string, password: string): Promise<{ message: string }> {
+  const res = await apiClient.post<{ message: string }>('/auth/reset-password', { token, password })
+  return res.data
+}
+
+
 
 
