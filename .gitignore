@@ -9,12 +9,3 @@ node_modules
 # Local env files
 .env
 **/.env
-
-
-
-
-
-
-# Local rules
-.cursorrules
-
