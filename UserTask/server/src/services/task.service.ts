@@ -35,12 +35,23 @@ class TaskService {
     return newTask
   }
 
-  public getAllTasks = async (accountId: number) => {
-    const tasks = await this.taskRepository.find({
+  public getAllTasks = async (accountId: number, page: number = 1, limit: number = 10) => {
+    const skip = (page - 1) * limit
+    const [tasks, count] = await this.taskRepository.findAndCount({
       where: [{ ownerId: accountId }, { isDemo: true }],
       relations: ['user'],
+      skip: skip,
+      take: limit,
+      order: {
+        id: 'DESC',
+      },
     })
-    return tasks
+    return {
+      content: tasks,
+      total: count,
+      page,
+      limit,
+    }
   }
 
   public getTaskByIdUser = async (id: any, accountId: number) => {

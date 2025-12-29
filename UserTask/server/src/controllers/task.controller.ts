@@ -16,8 +16,10 @@ class TaskController {
 
   public getAll = async (request: AuthRequest, response: express.Response) => {
     try {
-      let tasks = await this.service.getAllTasks(request.accountId)
-      response.send(tasks)
+      const page = Number(request.query.page) || 1
+      const limit = Number(request.query.limit) || 10
+      let result = await this.service.getAllTasks(request.accountId, page, limit)
+      response.send(result)
     } catch (error) {
       response.status(500).send(error.message)
     }

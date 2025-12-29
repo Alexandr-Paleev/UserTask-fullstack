@@ -39,5 +39,9 @@ export type CreateTaskPayload = {
   user: { id: number }
 }
 
-
-
+export type PaginatedResponse<T> = {
+  content: T[]
+  total: number
+  page: number
+  limit: number
+}

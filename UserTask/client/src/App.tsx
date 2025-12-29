@@ -11,6 +11,7 @@ import {
   Text,
   Title,
   Tooltip,
+  Button,
 } from '@mantine/core'
 import { IconListDetails, IconRefresh, IconUsers } from '@tabler/icons-react'
 
@@ -30,7 +31,7 @@ function AppContent() {
   const deleteTaskMutation = useDeleteTaskMutation()
 
   const users = usersQuery.data ?? []
-  const tasks = tasksQuery.data ?? []
+  const tasks = tasksQuery.data?.pages.flatMap((page) => page.content) ?? []
 
   return (
     <Grid gutter="xl">
@@ -86,6 +87,17 @@ function AppContent() {
 
           <ScrollArea h={400} type="hover" offsetScrollbars>
             <TaskList tasks={tasks} onDelete={(id) => deleteTaskMutation.mutate(id)} />
+            {tasksQuery.hasNextPage && (
+              <Button
+                fullWidth
+                variant="light"
+                mt="md"
+                onClick={() => tasksQuery.fetchNextPage()}
+                loading={tasksQuery.isFetchingNextPage}
+              >
+                Load more
+              </Button>
+            )}
           </ScrollArea>
 
           <Box mt="md">

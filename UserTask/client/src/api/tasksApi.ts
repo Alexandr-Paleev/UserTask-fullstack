@@ -1,8 +1,10 @@
 import { apiClient } from './apiClient'
-import type { Task, CreateTaskPayload } from '../types/entities'
+import type { Task, CreateTaskPayload, PaginatedResponse } from '../types/entities'
 
-export async function getTasks(): Promise<Task[]> {
-  const res = await apiClient.get<Task[]>('/task')
+export async function getTasks({ pageParam = 1 }: { pageParam?: number }): Promise<PaginatedResponse<Task>> {
+  const res = await apiClient.get<PaginatedResponse<Task>>('/task', {
+    params: { page: pageParam, limit: 10 },
+  })
   return res.data
 }
 

@@ -1,5 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import helmet from 'helmet'
 import 'reflect-metadata'
 
 class App {
@@ -15,6 +16,7 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.use(helmet())
     this.app.use(bodyParser.json())
 
     this.app.use(function (req, res, next) {
