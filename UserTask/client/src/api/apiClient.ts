@@ -1,7 +1,9 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 
-const API_URL: string = import.meta.env.VITE_API_URL || 'http://localhost:5001'
+import { env } from '../env'
+
+const API_URL: string = env.VITE_API_URL
 const AUTH_TOKEN_KEY = 'auth_token'
 
 export const apiClient: AxiosInstance = axios.create({

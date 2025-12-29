@@ -15,28 +15,26 @@ process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason)
 })
 
-;(async () => {
-  try {
-    console.log('Connecting to database...')
-    // Explicitly await connection
-    await createConnection(config)
-    console.log('Database connected successfully')
-  } catch (error) {
-    console.error('Error while connecting to the database', error)
-    process.exit(1)
-  }
+  ; (async () => {
+    try {
+      console.log('Connecting to database...')
+      // Explicitly await connection
+      await createConnection(config)
+      console.log('Database connected successfully')
+    } catch (error) {
+      console.error('Error while connecting to the database', error)
+      process.exit(1)
+    }
 
-  try {
-    console.log('Initializing app...')
-    const app = new App(
-      [new AuthRout(), new UserRout(), new TaskRout(), new CityRout()],
-      5001, // Changed port to 5001 to avoid conflict with AirPlay Receiver (port 5000)
-    )
+    try {
+      console.log('Initializing app...')
+      const app = new App(
+        [new AuthRout(), new UserRout(), new TaskRout(), new CityRout()],
+      )
 
-    console.log('Starting listener on port 5001...')
-    app.listen()
-    console.log('Listener started (sync call)')
-  } catch (e) {
-    console.error('Error initializing app:', e)
-  }
-})()
+      console.log('Starting listener...')
+      app.listen()
+    } catch (e) {
+      console.error('Error initializing app:', e)
+    }
+  })()

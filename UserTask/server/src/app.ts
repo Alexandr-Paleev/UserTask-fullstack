@@ -2,14 +2,15 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import helmet from 'helmet'
 import 'reflect-metadata'
+import { env } from './env'
+import Routers from './interfaces/routers-interface'
 
 class App {
   public app: express.Application
-  public port = process.env.PORT || 5001
+  public port = env.PORT
 
-  constructor(controllers, port) {
+  constructor(controllers: Routers[]) {
     this.app = express()
-    this.port = port
 
     this.initializeMiddlewares()
     this.initializeControllers(controllers)
@@ -21,7 +22,7 @@ class App {
 
     this.app.use(function (req, res, next) {
       // Allow configuring origin for local/dev/docker without code changes
-      const origin = process.env.CORS_ORIGIN || 'http://localhost:3000'
+      const origin = env.CORS_ORIGIN
       res.header('Access-Control-Allow-Origin', origin)
       res.header(
         'Access-Control-Allow-Headers',
@@ -35,8 +36,8 @@ class App {
     })
   }
 
-  private initializeControllers(controllers: any) {
-    controllers.forEach((controller: any) => {
+  private initializeControllers(controllers: Routers[]) {
+    controllers.forEach((controller) => {
       this.app.use('/', controller.router)
     })
   }
@@ -49,3 +50,4 @@ class App {
 }
 
 export default App
+
